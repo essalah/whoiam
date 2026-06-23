@@ -1,0 +1,16 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "printf": true,
+    "jar": true,
+    "javap": true,
+    "mvn -q dependency:tree": true,
+    "mvn dependency:tree": true,
+    "mvn -q dependency:build-classpath": true,
+    "cp": true,
+    "javac": true,
+    "mvn -q compile": true,
+    "mvn -Dspring-boot.run.profiles=dev -DskipTests spring-boot:run": true,
+    "mvn org.springframework.boot:spring-boot-maven-plugin:3.4.1:run": true,
+    "mvn -f backend/pom.xml": true
+  }
+}

@@ -1,0 +1,8 @@
+package com.elhachmi.portfolio.exception;
+
+public class StorageException extends RuntimeException {
+
+    public StorageException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
