@@ -11,7 +11,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -208,12 +209,21 @@ label {
 }
 
 input,
-textarea {
+textarea,
+select {
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   color: #18212f;
   min-width: 0;
   padding: 0.7rem 0.75rem;
+}
+
+select[multiple] {
+  min-height: 9rem;
+}
+
+select[multiple] option {
+  padding: 0.45rem;
 }
 
 textarea {
@@ -224,13 +234,109 @@ textarea {
 .checkbox-field {
   align-items: center;
   display: flex;
-  flex-direction: row-reverse;
   justify-content: flex-end;
 }
 
 .checkbox-field input {
+  flex: 0 0 auto;
   height: 1.1rem;
   width: 1.1rem;
+}
+
+.editor-heading,
+.record-copy {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.editor-heading .muted {
+  font-size: 0.82rem;
+}
+
+fieldset {
+  border: 1px solid #d8dee8;
+  border-radius: 6px;
+  margin: 0;
+  min-width: 0;
+  padding: 0.8rem;
+}
+
+legend {
+  color: #334155;
+  font-weight: 700;
+  padding: 0 0.3rem;
+}
+
+small {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.array-field,
+.image-field {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.array-row {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 2.6rem;
+}
+
+.icon-action {
+  border: 1px solid #fecdd3;
+  border-radius: 6px;
+  background: #fff1f2;
+  color: #be123c;
+  font-size: 1.35rem;
+  height: 2.6rem;
+  width: 2.6rem;
+}
+
+.compact-action {
+  justify-self: start;
+  padding: 0.5rem 0.7rem;
+}
+
+.image-field img {
+  background: #f1f5f9;
+  border: 1px solid #d8dee8;
+  border-radius: 6px;
+  height: 150px;
+  object-fit: contain;
+  width: 100%;
+}
+
+.upload-action {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.65rem 0.9rem;
+}
+
+.upload-action.disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.upload-action input {
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.field-error {
+  color: #be123c;
+  font-weight: 700;
 }
 
 .button-row,
@@ -276,6 +382,35 @@ textarea {
   margin: 0.25rem 0 0;
 }
 
+.record-copy {
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.record-copy img {
+  border-radius: 6px;
+  flex: 0 0 48px;
+  height: 48px;
+  object-fit: cover;
+  width: 48px;
+}
+
+.record-copy div {
+  min-width: 0;
+}
+
+.record-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.active-record {
+  border-color: #0f766e;
+  box-shadow: inset 3px 0 #0f766e;
+}
+
 .primary-action,
 .secondary-action,
 .ghost-action,
@@ -318,6 +453,38 @@ textarea {
 .form-error {
   background: #fff1f2;
   color: #be123c;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.state-panel {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  display: grid;
+  justify-items: center;
+  min-height: 220px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.state-panel p {
+  color: #64748b;
+  margin: 0;
+}
+
+.spinner {
+  animation: spin 0.8s linear infinite;
+  border: 3px solid #cbd5e1;
+  border-radius: 50%;
+  border-top-color: #0f766e;
+  height: 28px;
+  width: 28px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .notice {

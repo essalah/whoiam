@@ -22,12 +22,29 @@ export interface EntityConfig {
   label: string;
   description: string;
   fields: EntityField[];
+  create?: boolean;
+  delete?: boolean;
+  nestedUnderProfile?: boolean;
 }
 
 export interface EntityField {
   key: string;
   label: string;
-  type: "text" | "textarea" | "number" | "date" | "url" | "email" | "checkbox";
+  type:
+    | "text"
+    | "textarea"
+    | "number"
+    | "date"
+    | "url"
+    | "email"
+    | "checkbox"
+    | "select"
+    | "string-list"
+    | "multi-select"
+    | "image";
   required?: boolean;
   placeholder?: string;
+  options?: readonly string[];
+  optionsPath?: string;
+  help?: string;
 }

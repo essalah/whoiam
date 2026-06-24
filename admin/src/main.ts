@@ -1,5 +1,5 @@
 import { bootstrapApplication } from "@angular/platform-browser";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideHttpClient, withInterceptors } from "@angular/common/http";
@@ -12,6 +12,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(appRoutes),
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
   ],
 }).catch((err) => console.error(err));

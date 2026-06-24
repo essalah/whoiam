@@ -73,13 +73,13 @@ portfolio/
 
 ## Phase 2 — Spring Boot Backend
 
-## Phase 2 Status: Backend Implemented, Hardening Remaining ✅
+## Phase 2 Status: Backend and Test Sources Implemented ✅
 
 - Core backend components are implemented: entities, repositories, DTOs, mappers, services, controllers, JWT security, Cloudinary upload, structured API errors, validation hardening, and SpringDoc/OpenAPI metadata.
 - Swagger UI has been verified at `/swagger-ui.html` and the OpenAPI document is available at `/api-docs`.
 - An Angular admin dashboard first pass has been created in `admin/` with login, auth guard, JWT interceptor, protected shell, overview, and reusable CRUD manager.
 - Docker/Compose, environment template, CI workflow, and deployment notes are now present for backend/admin/PostgreSQL.
-- Current work focuses on testing admin CRUD flows against the running backend, adding image upload UI, expanding API documentation coverage, and beginning the public React frontend.
+- Controller OpenAPI coverage and focused MockMvc integration tests are implemented. Test execution still requires missing Surefire artifacts.
 
 **Execution order**: Entities → Migrations → Repos → DTOs → Mappers → Services → Controllers → Security → OpenAPI → Seed data → Admin scaffold
 
@@ -144,9 +144,7 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 
 ### Phase 2 Still Pending
 
-- Add focused integration tests for auth, validation errors, public access, admin access, and storage failure behavior.
-- Continue adding detailed SpringDoc annotations, response examples, and operation metadata across all controllers.
-- Re-run Swagger verification after each API shape change.
+- Re-run Swagger and integration verification after future API shape changes.
 
 ---
 
@@ -156,7 +154,7 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 > **ALL components use Angular Signals.** No `BehaviorSubject`, no `ngrx`, no Zone.js patterns.
 >
 > - `signal()` for state, `computed()` for derived, `effect()` for side effects
-> - `resource()` / `rxResource()` for async data (Angular 19+)
+> - `resource()` / `rxResource()` for async data (Angular 20+)
 
 ### Features
 
@@ -165,10 +163,11 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 - **CRUD Editors** — Profile, Experience, Projects, Skills, Education, Certifications, Languages
 - **Image Upload** — Drag & drop with `previewUrl = signal<string | null>(null)`
 - **Auth Guard** — `CanActivateFn` using signals
-- Standalone components, Angular Material 3 + Tailwind
+- Standalone components with custom responsive CSS
 
 ### Phase 3 Completed
 
+- Angular dependencies are aligned on the patched 20 LTS release.
 - Angular standalone app builds successfully.
 - `/login` is implemented and wired to `/api/v1/admin/auth/login`.
 - Auth state is signal-backed and persisted in `localStorage`.
@@ -179,10 +178,7 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 
 ### Phase 3 Still Pending
 
-- Test all CRUD routes against a running backend.
-- Replace generic editors for nested/relationship fields with richer controls.
-- Add image upload controls and previews to relevant admin forms.
-- Improve empty/loading/error states after live backend testing.
+- Verify a successful real Cloudinary upload after credentials are configured.
 
 ---
 
@@ -205,13 +201,16 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 ### UI/UX
 
 - Dark mode primary + light toggle
-- Framer Motion (reveal-on-scroll, page transitions, hover micro-interactions)
-- Bento Box layouts, smooth timeline, mobile-first
-- Tailwind CSS, Inter/Outfit fonts
+- CSS motion with reduced-motion support and navigation progress
+- Structured project grids, smooth timeline, mobile-first layouts
+- Custom responsive CSS with DM Sans and Manrope
 
 ### Phase 4 Status
 
-- Pending. Backend and admin contracts are now stable enough to start a first React Router v7 implementation pass.
+- Implemented with React Router 7.18 framework mode, SSR, route loaders, SEO metadata, six requested routes, responsive dark/light UI, API fallbacks, and a local hero asset.
+- Verified with clean `npm ci`, TypeScript typecheck, SSR production build, and live HTTP smoke test.
+- Production dependency audit reports 0 vulnerabilities.
+- Lighthouse remains an optional pre-deployment quality check.
 
 ---
 
@@ -228,6 +227,7 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 - `backend/Dockerfile`
 - `admin/Dockerfile`
 - `admin/docker/nginx.conf`
+- `frontend/Dockerfile`
 - `docker/compose.yml`
 - `.env.example`
 - `.github/workflows/ci.yml`
@@ -235,9 +235,8 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 
 ### Phase 5 Still Pending
 
-- Add frontend Dockerfile after the public React app exists.
-- Run full `docker compose up` validation with real environment values.
-- Extend deployment automation once the target host/provider is chosen.
+- Execute the hosted CI workflow and extend deployment automation once the target host/provider is chosen.
+- Configure production Cloudinary credentials and verify the upload success path.
 
 ---
 
@@ -246,22 +245,22 @@ Components: `JwtTokenProvider`, `JwtAuthenticationFilter`, `SecurityConfig`, `BC
 | Phase | Verification                                                                                                                                                                        |
 | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `resume_data.json` valid, all sections present                                                                                                                                      |
-| 2     | `mvn compile` ✅, Flyway runs ✅, Swagger UI available at `/swagger-ui.html` ✅, OpenAPI JSON available at `/api-docs` ✅, public endpoints open ✅, admin endpoints require JWT ✅ |
-| 3     | `npm run build --prefix admin` ✅, no `BehaviorSubject` in codebase ✅, live login/CRUD verification pending                                                                        |
-| 4     | Public React app pending: `npm run dev`, loader checks, SSR HTML, and Lighthouse still pending                                                                                      |
-| 5     | `docker compose -f docker/compose.yml config` ✅, full `docker compose up`, end-to-end runtime, and CI execution still pending                                                      |
+| 2     | `mvn test` ✅: 9 tests, 0 failures/errors; Flyway and public/admin security boundaries verified in the live stack                                                                   |
+| 3     | Clean `npm ci` and production build ✅, no `BehaviorSubject` ✅, seeded login and live CRUD cycle ✅, Cloudinary success path awaits credentials                                     |
+| 4     | Clean install, typecheck, SSR build, six loader routes, and live SSR HTTP smoke test ✅; Lighthouse optional before deployment                                                      |
+| 5     | Four-service Compose build/start ✅, PostgreSQL healthy ✅, HTTP endpoints verified ✅; hosted CI and provider deployment pending                                                    |
 
 ## Dependency Graph
 
 ```mermaid
 graph TD
-    A["Phase 1: Resume ✅"] --> B["Phase 2: Backend implemented; tests/docs remain"]
+    A["Phase 1: Resume ✅"] --> B["Phase 2: Backend + tests implemented ✅"]
     B --> C["Swagger Verification Gate ✅"]
-    C --> D["Phase 3: Angular Admin first pass ✅"]
-    C --> E["Phase 4: React Frontend pending"]
-    D --> F["Phase 5: Deployment scaffold ✅"]
+    C --> D["Phase 3: Angular Admin implemented ✅"]
+    C --> E["Phase 4: React Frontend implemented"]
+    D --> F["Phase 5: Four-service deployment config ✅"]
     E --> F
 ```
 
 > [!NOTE]
-> Phase 4 can begin next. Phase 3 should continue with live CRUD verification and richer admin forms.
+> Implementation and local end-to-end verification are complete. Remaining work depends on external credentials and deployment-provider selection.

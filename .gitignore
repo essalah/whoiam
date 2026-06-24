@@ -1,0 +1,15 @@
+# Build output
+backend/target/
+admin/dist/
+frontend/build/
+
+# Dependency and framework caches
+admin/node_modules/
+admin/.angular/
+frontend/node_modules/
+frontend/.react-router/
+
+# Local environment and editor files
+.env
+*.log
+.DS_Store

@@ -45,6 +45,10 @@ export class ApiService {
       .pipe(map((url) => ({ url })));
   }
 
+  get<T extends AdminEntity>(path: string): Observable<T> {
+    return this.http.get<T>(this.adminUrl(path));
+  }
+
   private adminUrl(path: string): string {
     return `${API_BASE_URL}/admin/${path}`;
   }

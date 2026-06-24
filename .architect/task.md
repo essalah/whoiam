@@ -1,10 +1,10 @@
 # Portfolio System Progress Tracker
 
-_Last updated: 2026-06-22_
+_Last updated: 2026-06-23_
 
 ## Summary
 
-The portfolio system has completed the Phase 1 resume extraction baseline and a substantial Phase 2/3/5 implementation pass. The backend API, security, validation, storage endpoint, Swagger/OpenAPI exposure, first Angular admin UI, Docker/Compose setup, CI workflow, and deployment notes are now in place. The next work should focus on testing real admin CRUD flows against a running backend, improving complex admin editors, finishing image upload UX, expanding endpoint documentation, and then starting the public React frontend.
+All planned application layers are implemented and locally verified: Spring Boot backend, Signals-based Angular admin, React Router v7 SSR frontend, PostgreSQL migrations, and the four-service Docker stack. Backend tests, clean npm installs, production builds, seeded login, public/admin HTTP boundaries, SSR output, and a live CRUD cycle pass. Only credential- or provider-dependent verification remains.
 
 ## Completed
 
@@ -23,6 +23,10 @@ The portfolio system has completed the Phase 1 resume extraction baseline and a 
 - Backend request contracts now use stronger enum typing, URL limits, and structured validation errors with field-level violations.
 - Angular admin dashboard now includes login, JWT auth state, interceptor, guard, dashboard shell, overview, and reusable CRUD management routes.
 - Docker, Compose, environment template, CI workflow, and deployment notes have been added for backend/admin/PostgreSQL production readiness.
+- Backend controller coverage now includes shared authenticated OpenAPI responses and nine focused MockMvc integration tests.
+- Angular admin editors now support enums, dates, achievements, project skill relationships, image upload previews, and structured API errors.
+- React Router v7 public frontend now implements all six loader-based routes, SSR configuration, SEO metadata, responsive dark/light UI, API fallbacks, and a local hero asset.
+- Frontend Docker configuration, Compose service, environment variables, CI steps, and deployment documentation are implemented.
 
 ## Current status
 
@@ -49,19 +53,15 @@ The portfolio system has completed the Phase 1 resume extraction baseline and a 
   - `.env.example`
   - `.github/workflows/ci.yml`
   - `docs/plans/deployment.md`
-- Remaining components:
-  - Deepen Angular CRUD forms for complex nested fields such as achievements and project tech stack IDs
-  - Add image upload controls into the admin entity editor UI
-  - Continue SpringDoc/OpenAPI metadata coverage for all endpoints
-  - Public React frontend planning and implementation
-- Angular admin dashboard has moved beyond scaffold into an integrated first pass.
+- Angular admin has moved beyond the first pass into a contract-aware CRUD implementation.
+- Public frontend implementation is present in `frontend/` with route loaders and SSR enabled.
+- Compose now describes PostgreSQL, backend, admin, and public frontend services.
 
 ## Next steps
 
-1. Test the Angular admin CRUD flows against a running backend and refine complex fields.
-2. Add image upload controls and previews to the admin project/profile editors.
-3. Continue SpringDoc/OpenAPI metadata coverage and ensure endpoint responses are documented.
-4. Start the public React Router v7 frontend now that backend/admin contracts are stable enough for first integration.
+1. Add valid Cloudinary credentials and verify a real image upload from the Angular editor.
+2. Run the GitHub Actions workflow on the remote repository.
+3. Choose a deployment provider and execute the deployment checklist.
 
 ## Verification completed
 
@@ -70,22 +70,28 @@ The portfolio system has completed the Phase 1 resume extraction baseline and a 
 - `docker compose -f docker/compose.yml config` validates the Compose file.
 - `rg "BehaviorSubject" admin/src backend/src` returns no usage, keeping the Angular admin aligned with the Signals-only rule.
 - Swagger UI and OpenAPI JSON were previously verified at `/swagger-ui.html` and `/api-docs`.
+- All public frontend route modules export loaders; no route-level `useEffect` data fetching is present.
+- Frontend JSON/config structure and local visual asset paths validate.
+- `mvn test` passes: 9 tests, 0 failures, 0 errors.
+- Clean `npm ci`, TypeScript typecheck, and React Router SSR production build pass.
+- Clean Angular `npm ci` and production build pass with Angular-compatible Zone.js.
+- Four-service Docker build/start passes; PostgreSQL is healthy and Flyway applies both migrations.
+- Public API returns `200`, protected admin API returns `401`, admin UI returns `200`, and public SSR returns `200`.
+- Seeded `admin` / `admin123` login returns `200`; live skill create/update/delete returns `200` / `200` / `204`.
+- Historical `backend/target` and `admin/.angular` artifacts were removed from Git tracking and are ignored.
+- Angular was upgraded to 20 LTS and React Router to 7.18.0; production dependency audits report 0 vulnerabilities.
 
 ## Pending work
 
-- Run the Angular admin against the backend and verify create/update/delete flows entity by entity.
-- Replace generic JSON/text entry for nested admin fields with purpose-built form controls.
-- Add image upload controls, previews, and upload error handling in admin project/profile editors.
-- Add more SpringDoc endpoint metadata and examples where the API contract is still sparse.
-- Add backend/API integration tests for auth, validation errors, protected routes, and storage failure paths.
-- Start the public React Router v7 frontend after the admin/backend contract has been exercised.
+- Verify a successful real Cloudinary upload after credentials are configured.
+- Execute hosted CI and production deployment after a provider is selected.
 
 ## Remaining roadmap
 
-- Phase 2: Backend API is functionally implemented; remaining work is deeper documentation, runtime integration testing, and focused regression coverage.
-- Phase 3: Angular admin first pass is implemented; remaining work is real CRUD verification, richer forms, image upload UI, and polish.
-- Phase 4: React public frontend remains pending.
-- Phase 5: Dockerization, env template, CI, and deployment notes are present; remaining work is full end-to-end deployment validation.
+- Phase 2: Complete and locally verified.
+- Phase 3: Complete; CRUD is verified and Cloudinary success-path testing awaits credentials.
+- Phase 4: Complete; install, typecheck, SSR build, and HTTP smoke test pass.
+- Phase 5: Local Docker runtime verified; hosted CI and provider deployment remain.
 
 ## Multi-Agent Execution Plan
 
@@ -94,9 +100,9 @@ Use this board when splitting work across multiple AI agents. The goal is to kee
 | Agent lane            | Scope                                                                                                      | Depends on                                          | Output                                                        |
 | --------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------- |
 | Backend hardening     | Request validation, centralized error responses, DTO enum coverage, storage errors, OpenAPI cleanup        | Existing backend services/controllers               | Done: tighter backend API contract ready for frontend testing |
-| Angular admin agent   | Login, auth guard, dashboard shell, CRUD pages, image upload, API integration                              | Stable admin auth endpoints and CRUD contracts      | Mostly done: first UI pass is wired; image upload UI remains  |
-| Public frontend agent | React Router v7 app, loaders, routes, SEO metadata, public portfolio pages                                 | Swagger-stable backend API and agreed response DTOs | Public portfolio site consuming backend data                  |
-| Platform agent        | Dockerfiles, compose, env templates, CI/CD workflow, deployment notes                                      | Stable backend and frontend app structure           | Done: repeatable backend/admin/PostgreSQL build setup         |
+| Angular admin agent   | Login, auth guard, dashboard shell, rich CRUD editors, image upload, API integration                        | Stable admin auth endpoints and CRUD contracts      | Done: implementation and production build complete            |
+| Public frontend agent | React Router v7 app, loaders, routes, SEO metadata, public portfolio pages                                 | Swagger-stable backend API and agreed response DTOs | Done: typecheck, SSR build, and HTTP smoke test pass           |
+| Platform agent        | Dockerfiles, compose, env templates, CI/CD workflow, deployment notes                                      | Stable backend and frontend app structure           | Done: four-service build/deployment configuration             |
 | Review agent          | Cross-cutting QA, integration checks, regression review after merges                                       | Completed slices from other agents                  | Feedback on correctness, gaps, and merge risk                 |
 
 ### Suggested handoff order

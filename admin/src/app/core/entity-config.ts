@@ -5,15 +5,17 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     path: "profile",
     label: "Profile",
     description: "Core identity, contact details, and headline content.",
+    create: false,
+    delete: false,
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
       { key: "title", label: "Title", type: "text", required: true },
-      { key: "summary", label: "Summary", type: "textarea" },
+      { key: "summary", label: "Summary", type: "textarea", placeholder: "Short professional introduction" },
       { key: "email", label: "Email", type: "email" },
       { key: "phone", label: "Phone", type: "text" },
       { key: "location", label: "Location", type: "text" },
       { key: "website", label: "Website", type: "url" },
-      { key: "avatarUrl", label: "Avatar URL", type: "url" },
+      { key: "avatarUrl", label: "Avatar", type: "image" },
     ],
   },
   {
@@ -28,6 +30,7 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
       { key: "endDate", label: "End date", type: "date" },
       { key: "description", label: "Description", type: "textarea" },
       { key: "sortOrder", label: "Sort order", type: "number" },
+      { key: "achievements", label: "Achievements", type: "string-list", help: "Add each achievement as a separate item." },
     ],
   },
   {
@@ -37,11 +40,12 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     fields: [
       { key: "title", label: "Title", type: "text", required: true },
       { key: "description", label: "Description", type: "textarea" },
-      { key: "imageUrl", label: "Image URL", type: "url" },
+      { key: "imageUrl", label: "Project image", type: "image" },
       { key: "liveUrl", label: "Live URL", type: "url" },
       { key: "githubUrl", label: "GitHub URL", type: "url" },
       { key: "featured", label: "Featured", type: "checkbox" },
       { key: "sortOrder", label: "Sort order", type: "number" },
+      { key: "techStackIds", label: "Skills", type: "multi-select", optionsPath: "skills", help: "Choose the skills used by this project." },
     ],
   },
   {
@@ -50,8 +54,8 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     description: "Skill names, categories, proficiency, and display order.",
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "category", label: "Category", type: "text" },
-      { key: "proficiency", label: "Proficiency", type: "text" },
+      { key: "category", label: "Category", type: "select", required: true, options: ["LANGUAGES", "MOBILE", "FRONTEND", "BACKEND", "ARCHITECTURE", "LIBRARIES", "TESTING", "DATABASE", "DEVOPS"] },
+      { key: "proficiency", label: "Proficiency", type: "select", required: true, options: ["EXPERT", "ADVANCED", "INTERMEDIATE", "BEGINNER"] },
       { key: "sortOrder", label: "Sort order", type: "number" },
     ],
   },
@@ -61,10 +65,11 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     description: "Degrees, institutions, fields, and dates.",
     fields: [
       { key: "institution", label: "Institution", type: "text", required: true },
-      { key: "degree", label: "Degree", type: "text" },
+      { key: "degree", label: "Degree", type: "text", required: true },
       { key: "field", label: "Field", type: "text" },
       { key: "startDate", label: "Start date", type: "date" },
       { key: "endDate", label: "End date", type: "date" },
+      { key: "description", label: "Description", type: "textarea" },
       { key: "sortOrder", label: "Sort order", type: "number" },
     ],
   },
@@ -75,7 +80,7 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
       { key: "issuer", label: "Issuer", type: "text" },
-      { key: "date", label: "Date", type: "date" },
+      { key: "issueDate", label: "Issue date", type: "date" },
       { key: "url", label: "URL", type: "url" },
       { key: "sortOrder", label: "Sort order", type: "number" },
     ],
@@ -86,18 +91,17 @@ export const ENTITY_CONFIGS: EntityConfig[] = [
     description: "Spoken languages and proficiency levels.",
     fields: [
       { key: "name", label: "Name", type: "text", required: true },
-      { key: "proficiency", label: "Proficiency", type: "text" },
-      { key: "sortOrder", label: "Sort order", type: "number" },
+      { key: "proficiency", label: "Proficiency", type: "select", required: true, options: ["NATIVE", "FLUENT", "PROFESSIONAL", "INTERMEDIATE", "BEGINNER"] },
     ],
   },
   {
     path: "social-links",
     label: "Social links",
     description: "Public profile links attached to the portfolio profile.",
+    nestedUnderProfile: true,
     fields: [
-      { key: "platform", label: "Platform", type: "text", required: true },
+      { key: "platform", label: "Platform", type: "select", required: true, options: ["LINKEDIN", "GITHUB", "TWITTER", "WEBSITE", "OTHER"] },
       { key: "url", label: "URL", type: "url", required: true },
-      { key: "sortOrder", label: "Sort order", type: "number" },
     ],
   },
 ];

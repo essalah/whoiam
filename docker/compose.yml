@@ -41,5 +41,16 @@ services:
     depends_on:
       - backend
 
+  frontend:
+    build:
+      context: ../frontend
+    environment:
+      API_BASE_URL: http://backend:8080/api/v1/portfolio
+      PORT: 3000
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
 volumes:
   postgres-data:

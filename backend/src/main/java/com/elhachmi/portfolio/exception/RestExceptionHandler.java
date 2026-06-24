@@ -22,6 +22,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.Comparator;
@@ -29,6 +31,8 @@ import java.util.List;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
@@ -57,16 +61,23 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ApiError> handleStorage(StorageException ex, HttpServletRequest request) {
+        LOGGER.error("Storage operation failed for {}", request.getRequestURI(), ex);
         return buildResponse(HttpStatus.BAD_GATEWAY, "STORAGE_ERROR", ex.getMessage(), request.getRequestURI());
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ApiError> handleMaxUploadSize(MaxUploadSizeExceededException ex, HttpServletRequest request) {
-        return buildResponse(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE", "Uploaded file exceeds the configured size limit", request.getRequestURI());
+    @Override
+    protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
+                                                                           HttpHeaders headers,
+                                                                           HttpStatusCode status,
+                                                                           WebRequest request) {
+        ApiError apiError = buildError(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
+                "Uploaded file exceeds the configured size limit", requestPath(request), List.of());
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(apiError);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest request) {
+        LOGGER.error("Unexpected error while handling {}", request.getRequestURI(), ex);
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "An unexpected error occurred", request.getRequestURI());
     }
 

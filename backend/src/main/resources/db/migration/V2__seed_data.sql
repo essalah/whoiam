@@ -3,7 +3,7 @@
 
 -- Admin User (password: admin123)
 INSERT INTO admin_user (username, password_hash, role, enabled)
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ROLE_ADMIN', true);
+VALUES ('admin', '$2a$10$ItRhIh.hkKjGfq7dCWE75uJrOxTxv5nz.6wxQChNwnrh7jyXOt72a', 'ROLE_ADMIN', true);
 
 -- Profile
 INSERT INTO profile (name, title, summary, email, phone, location, website, avatar_url)
