@@ -36,8 +36,11 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:dev-secret-key-must-be-at-least-256-bits-long-for-hs256-algorithm}
-  expiration: 86400000 # 24 hours in milliseconds
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION_MS:900000} # 15 minutes
+
+legal:
+  current-terms-version: ${TERMS_VERSION:v1.0}
 
 # Cloudinary Configuration
 cloudinary:

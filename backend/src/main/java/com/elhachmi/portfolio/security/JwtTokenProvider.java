@@ -13,9 +13,13 @@ import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenProvider {
+
+    private static final String PRINCIPAL_TYPE_CLAIM = "principalType";
+    private static final String CUSTOMER_PRINCIPAL = "CUSTOMER";
 
     private final String jwtSecret;
     private final long jwtExpirationMs;
@@ -40,6 +44,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim(PRINCIPAL_TYPE_CLAIM, principalType(authentication))
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -64,7 +69,30 @@ public class JwtTokenProvider {
         }
     }
 
+    public boolean isCustomerToken(String token) {
+        return CUSTOMER_PRINCIPAL.equals(getPrincipalTypeFromToken(token));
+    }
+
+    public String getPrincipalTypeFromToken(String token) {
+        return parseClaims(token).get(PRINCIPAL_TYPE_CLAIM, String.class);
+    }
+
     public long getExpiration() {
         return jwtExpirationMs;
+    }
+
+    private String principalType(Authentication authentication) {
+        List<String> authorities = authentication.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .toList();
+        return authorities.contains("ROLE_ADMIN") ? "ADMIN" : CUSTOMER_PRINCIPAL;
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

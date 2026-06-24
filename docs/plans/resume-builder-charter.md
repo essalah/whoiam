@@ -1,10 +1,12 @@
 # Resume Builder Platform — Project Charter and Implementation Plan
 
-**Status:** Proposed  
+**Status:** Approved for phased implementation
 **Prepared:** 2026-06-24  
 **Working product name:** Resume Builder  
 **Current system:** Single-owner portfolio CMS  
 **Target system:** Multi-user resume creation and sharing platform
+
+**Implementation status:** See [resume-builder-progress.md](./resume-builder-progress.md).
 
 ## 1. Executive summary
 
@@ -612,4 +614,3 @@ These do not block initial domain work if the recommended defaults are accepted:
 
 - FlowCV product pattern reviewed on 2026-06-24: one resume free forever, paid multiple versions, professional templates, PDF download, and unique sharing links: <https://flowcv.com/resume-builder>
 - FlowCV's positioning describes payment for multiple versions/advanced features: <https://flowcv.com/about/>
-

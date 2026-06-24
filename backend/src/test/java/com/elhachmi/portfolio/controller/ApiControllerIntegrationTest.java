@@ -10,6 +10,9 @@ import com.elhachmi.portfolio.dto.response.SkillResponse;
 import com.elhachmi.portfolio.exception.ResourceNotFoundException;
 import com.elhachmi.portfolio.exception.RestExceptionHandler;
 import com.elhachmi.portfolio.exception.StorageException;
+import com.elhachmi.portfolio.identity.CustomerAccountDetailsService;
+import com.elhachmi.portfolio.resume.ResumeController;
+import com.elhachmi.portfolio.resume.ResumeService;
 import com.elhachmi.portfolio.security.AdminUserDetailsService;
 import com.elhachmi.portfolio.security.JwtAuthenticationFilter;
 import com.elhachmi.portfolio.security.JwtTokenProvider;
@@ -53,7 +56,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({PortfolioController.class, AuthController.class, AdminSkillController.class, AdminStorageController.class})
+@WebMvcTest({PortfolioController.class, AuthController.class, AdminSkillController.class,
+        AdminStorageController.class, ResumeController.class})
 @Import({SecurityConfig.class, JwtAuthenticationFilter.class, JwtTokenProvider.class, RestExceptionHandler.class, OpenApiConfig.class})
 @TestPropertySource(properties = {
         "jwt.secret=test-secret-key-that-is-at-least-256-bits-long-for-hs256",
@@ -66,6 +70,7 @@ class ApiControllerIntegrationTest {
 
     @MockitoBean AuthService authService;
     @MockitoBean AdminUserDetailsService userDetailsService;
+    @MockitoBean CustomerAccountDetailsService customerAccountDetailsService;
     @MockitoBean ProfileService profileService;
     @MockitoBean ExperienceService experienceService;
     @MockitoBean ProjectService projectService;
@@ -74,6 +79,7 @@ class ApiControllerIntegrationTest {
     @MockitoBean CertificationService certificationService;
     @MockitoBean LanguageService languageService;
     @MockitoBean StorageService storageService;
+    @MockitoBean ResumeService resumeService;
 
     private String token;
 
@@ -108,13 +114,29 @@ class ApiControllerIntegrationTest {
     @Test
     void adminEndpointsRejectAuthenticatedNonAdminUsers() throws Exception {
         var user = User.withUsername("viewer").password("ignored").roles("USER").build();
-        when(userDetailsService.loadUserByUsername("viewer")).thenReturn(user);
+        when(customerAccountDetailsService.loadActiveUserDetails("viewer")).thenReturn(user);
         String viewerToken = jwtTokenProvider.generateToken(
                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 
         mockMvc.perform(get("/api/v1/admin/skills")
                         .header("Authorization", "Bearer " + viewerToken))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void resumeEndpointsRejectAdminTokensAndAcceptCustomerTokens() throws Exception {
+        mockMvc.perform(get("/api/v1/resumes").header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+
+        var customer = User.withUsername("customer@example.com").password("ignored").roles("USER").build();
+        when(customerAccountDetailsService.loadActiveUserDetails("customer@example.com")).thenReturn(customer);
+        String customerToken = jwtTokenProvider.generateToken(
+                new UsernamePasswordAuthenticationToken(customer, null, customer.getAuthorities()));
+        when(resumeService.list(any())).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/v1/resumes").header("Authorization", "Bearer " + customerToken))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
     }
 
     @Test

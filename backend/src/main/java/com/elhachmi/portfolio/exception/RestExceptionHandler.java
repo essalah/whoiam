@@ -1,5 +1,7 @@
 package com.elhachmi.portfolio.exception;
 
+import com.elhachmi.portfolio.identity.EmailAlreadyRegisteredException;
+import com.elhachmi.portfolio.identity.InvalidRegistrationException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +44,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.UNAUTHORIZED, "AUTHENTICATION_FAILED", "Invalid username or password", request.getRequestURI());
+    }
+
+    @ExceptionHandler(EmailAlreadyRegisteredException.class)
+    public ResponseEntity<ApiError> handleEmailAlreadyRegistered(EmailAlreadyRegisteredException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.CONFLICT, "EMAIL_ALREADY_REGISTERED", ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidRegistrationException.class)
+    public ResponseEntity<ApiError> handleInvalidRegistration(InvalidRegistrationException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "REGISTRATION_INVALID", ex.getMessage(), request.getRequestURI());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

@@ -23,7 +23,7 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-portfolio}
       DB_USERNAME: ${POSTGRES_USER:-portfolio}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-portfolio_dev_password}
-      JWT_SECRET: ${JWT_SECRET:-replace-with-at-least-32-random-bytes-for-hs256}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
